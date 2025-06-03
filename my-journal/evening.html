@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Evening Review - Dynamic Greeting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #fbe9e7, #ede7f6);
+            display: grid;
+            place-items: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
+            gap: 20px;
+            width: 95%;
+            height: 95vh;
+        }
+        .input-section, .output-section {
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        .input-section {
+            background-color: #ffffff;
+        }
+        .output-section {
+            background-color: #ffffff;
+            border-left: 4px solid #7e57c2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+        .input-section h2 {
+            margin-top: 0;
+            color: #7e57c2;
+        }
+        .input-section label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #5e35b1;
+        }
+        .input-section input[type="text"], .input-section textarea {
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1c4e9;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .input-section textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .input-section .radio-group {
+            margin-top: 5px;
+        }
+        .placeholder-style {
+            color: #999;
+        }
+        .output-text {
+            flex: 1;
+        }
+        .copy-button, .reset-button {
+            background-color: #7e57c2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-button:hover, .reset-button:hover {
+            background-color: #5e35b1;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        @media (max-width: 800px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+            }
+            .output-section {
+                border-left: none;
+                border-top: 4px solid #7e57c2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h2>Evening Review - Input</h2>
+            <label for="userName">Enter name:</label>
+            <input type="text" id="userName" placeholder="Enter the name here">
+
+            <label>Fulfilled my intention?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="fulfilled" value="Yes"> Yes</label>
+                <label><input type="radio" name="fulfilled" value="No"> No</label>
+                <label><input type="radio" name="fulfilled" value="Partially"> Partially</label>
+            </div>
+
+            <label>Achieved my result?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="achieved" value="Yes"> Yes</label>
+                <label><input type="radio" name="achieved" value="No"> No</label>
+                <label><input type="radio" name="achieved" value="Partially"> Partially</label>
+            </div>
+
+            <label>Took actions?</label>
+            <div class="radio-group">
+                <label><input type="radio" name="actions" value="Yes"> Yes</label>
+                <label><input type="radio" name="actions" value="No"> No</label>
+                <label><input type="radio" name="actions" value="Partially"> Partially</label>
+            </div>
+
+            <label for="grateful">1. One thing/person I’m grateful for</label>
+            <textarea id="grateful" placeholder="E.g., My mentor, a friend, nature..."></textarea>
+
+            <label for="loveSelf">2. One thing I love about myself</label>
+            <textarea id="loveSelf" placeholder="E.g., My patience, creativity, kindness..."></textarea>
+
+            <label for="didWell">3. One thing I did well today</label>
+            <textarea id="didWell" placeholder="E.g., Finished a task, helped someone..."></textarea>
+
+            <label for="couldDoBetter">4. One thing I could have done differently</label>
+            <textarea id="couldDoBetter" placeholder="E.g., Spent less time online, been more focused..."></textarea>
+
+            <label for="learnt">5. One thing I learnt today</label>
+            <textarea id="learnt" placeholder="E.g., A new idea, a life lesson, a skill..."></textarea>
+
+            <label for="actionTomorrow">6. One Action that I will take that will move me ahead</label>
+            <textarea id="actionTomorrow" placeholder="E.g., Plan my day, reach out to someone..."></textarea>
+
+            <button class="reset-button" onclick="resetFields()">Clear All</button>
+        </div>
+        <div class="output-section">
+            <div class="output-text" id="outputMessage">
+                <!-- Live preview -->
+            </div>
+            <button class="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Message copied to clipboard!</div>
+
+    <script>
+        const inputs = {
+            userName: document.getElementById('userName'),
+            grateful: document.getElementById('grateful'),
+            loveSelf: document.getElementById('loveSelf'),
+            didWell: document.getElementById('didWell'),
+            couldDoBetter: document.getElementById('couldDoBetter'),
+            learnt: document.getElementById('learnt'),
+            actionTomorrow: document.getElementById('actionTomorrow'),
+        };
+
+        function getFormattedDate() {
+            const date = new Date();
+            const weekday = date.toLocaleDateString('en-GB', { weekday: 'short' });
+            const day = date.getDate();
+            const month = date.toLocaleDateString('en-GB', { month: 'short' });
+            const year = date.getFullYear();
+            const dayWithSuffix = day + (day % 10 === 1 && day !== 11 ? 'st' :
+                                         day % 10 === 2 && day !== 12 ? 'nd' :
+                                         day % 10 === 3 && day !== 13 ? 'rd' : 'th');
+            return `${weekday}, ${dayWithSuffix} ${month} ${year}`;
+        }
+
+        function getRadioValue(name) {
+            const radios = document.getElementsByName(name);
+            for (const radio of radios) {
+                if (radio.checked) return radio.value;
+            }
+            return '';
+        }
+
+        const outputMessage = document.getElementById('outputMessage');
+
+        function updateMessage() {
+            const dateStr = getFormattedDate();
+            const userName = inputs.userName.value.trim();
+            const greetingName = userName || "Ashlesh, Monica & Everyone";
+
+            outputMessage.textContent = 
+`Good Evening ${greetingName}!!!
+
+Here is my Evening Review (${dateStr})
+
+*Fulfilled my intention?* - ${getRadioValue('fulfilled')}
+*Achieved my result?* - ${getRadioValue('achieved')}
+*Took Actions?* - ${getRadioValue('actions')}
+
+*1. One thing/person I’m grateful for*
+${inputs.grateful.value}
+
+*2. One thing I love about myself*
+${inputs.loveSelf.value}
+
+*3. One thing I did well today*
+${inputs.didWell.value}
+
+*4. One thing I could have done differently*
+${inputs.couldDoBetter.value}
+
+*5. One thing I learnt today*
+${inputs.learnt.value}
+
+*6. One Action that I will take that will move me ahead*
+${inputs.actionTomorrow.value}
+
+Good Night Everyone!!!`;
+        }
+
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', updateMessage);
+        });
+
+        ['fulfilled', 'achieved', 'actions'].forEach(name => {
+            document.getElementsByName(name).forEach(radio => {
+                radio.addEventListener('change', updateMessage);
+            });
+        });
+
+        updateMessage();
+
+        function copyToClipboard() {
+            const text = outputMessage.textContent;
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('Message copied to clipboard!'))
+                .catch(err => showToast('Failed to copy: ' + err));
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = "toast show";
+            setTimeout(() => {
+                toast.className = toast.className.replace("show", "");
+            }, 3000);
+        }
+
+        function resetFields() {
+            document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
+            updateMessage();
+        }
+    </script>
+</body>
+</html>

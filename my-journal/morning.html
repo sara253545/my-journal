@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Morning Creation - Dynamic Greeting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #e0f7fa, #fff3e0);
+            display: grid;
+            place-items: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
+            gap: 20px;
+            width: 95%;
+            height: 95vh;
+        }
+        .input-section, .output-section {
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            overflow-y: auto;
+        }
+        .input-section {
+            background-color: #ffffff;
+        }
+        .output-section {
+            background-color: #ffffff;
+            border-left: 4px solid #00796b;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+        .input-section h2 {
+            margin-top: 0;
+            color: #00796b;
+        }
+        .input-section label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #004d40;
+        }
+        .input-section input, .input-section textarea {
+            width: 100%;
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b2dfdb;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .input-section textarea {
+            height: 60px;
+            resize: vertical;
+        }
+        .placeholder-style {
+            color: #999;
+        }
+        .output-text {
+            flex: 1;
+        }
+        .copy-button, .reset-button {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .copy-button:hover, .reset-button:hover {
+            background-color: #004d40;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            padding: 12px;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        @media (max-width: 800px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+            }
+            .output-section {
+                border-left: none;
+                border-top: 4px solid #00796b;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h2>My Morning Creation - Input</h2>
+            <label for="userName">Enter name:</label>
+            <input type="text" id="userName" placeholder="Enter the name here">
+            
+            <label for="resultGoal">1. RESULT GOAL</label>
+            <textarea id="resultGoal" placeholder="The most important result I am standing for today is..."></textarea>
+            
+            <label for="processGoal">2. PROCESS GOAL</label>
+            <textarea id="processGoal" placeholder="The most important actions I need to take today are..."></textarea>
+            
+            <label for="beingGoal">3. BEING GOAL</label>
+            <textarea id="beingGoal" placeholder="My context/intention/way of being today is..."></textarea>
+            
+            <label for="feelingsGoal">4. FEELINGS GOAL</label>
+            <textarea id="feelingsGoal" placeholder="The wonderful feelings I want to feel today are..."></textarea>
+            
+            <label for="growthGoal">5. GROWTH GOAL</label>
+            <textarea id="growthGoal" placeholder="What will help me grow today is..."></textarea>
+            
+            <label for="magicGoal">6. MAGICAL GOAL</label>
+            <textarea id="magicGoal" placeholder="What will make today magical for me is..."></textarea>
+
+            <button class="reset-button" onclick="resetFields()">Clear All</button>
+        </div>
+        <div class="output-section">
+            <div class="output-text" id="outputMessage">
+                <!-- Live preview goes here -->
+            </div>
+            <button class="copy-button" onclick="copyToClipboard()">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Message copied to clipboard!</div>
+
+    <script>
+        const inputs = {
+            userName: document.getElementById('userName'),
+            resultGoal: document.getElementById('resultGoal'),
+            processGoal: document.getElementById('processGoal'),
+            beingGoal: document.getElementById('beingGoal'),
+            feelingsGoal: document.getElementById('feelingsGoal'),
+            growthGoal: document.getElementById('growthGoal'),
+            magicGoal: document.getElementById('magicGoal'),
+        };
+        
+        const outputMessage = document.getElementById('outputMessage');
+
+        function getFormattedDate() {
+            const date = new Date();
+            const weekday = date.toLocaleDateString('en-GB', { weekday: 'short' });
+            const day = date.getDate();
+            const month = date.toLocaleDateString('en-GB', { month: 'short' });
+            const year = date.getFullYear();
+            const dayWithSuffix = day + (day % 10 === 1 && day !== 11 ? 'st' :
+                                         day % 10 === 2 && day !== 12 ? 'nd' :
+                                         day % 10 === 3 && day !== 13 ? 'rd' : 'th');
+            return `${weekday}, ${dayWithSuffix} ${month} ${year}`;
+        }
+
+        function updateMessage() {
+            const dateStr = getFormattedDate();
+            const userName = inputs.userName.value.trim();
+            const greetingName = userName || "Ashlesh, Monica & Everyone";
+
+            outputMessage.textContent = 
+`Good Morning ${greetingName}!!!
+
+My Morning Creation (${dateStr})
+
+*1. What is the most important result that I am standing for today?*
+${inputs.resultGoal.value}
+
+*2. What are the most important actions for me to take today?*
+${inputs.processGoal.value}
+
+*3. What is my context/intention/way of being that I am taking on today?*
+${inputs.beingGoal.value}
+
+*4. What wonderful feelings do I want to feel today?*
+${inputs.feelingsGoal.value}
+
+*5. What when I do will help me grow today?*
+${inputs.growthGoal.value}
+
+*6. What will be magical for me today?*
+${inputs.magicGoal.value}
+
+Have a nice day Everyone!!!`;
+        }
+
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.remove('placeholder-style');
+                updateMessage();
+            });
+
+            if (input.tagName === "TEXTAREA") {
+                input.addEventListener('focus', function() {
+                    if (!this.value) {
+                        this.value = this.placeholder;
+                        this.classList.add('placeholder-style');
+                        updateMessage();
+                    }
+                });
+                input.addEventListener('blur', function() {
+                    if (this.value === this.placeholder) {
+                        this.classList.add('placeholder-style');
+                    } else {
+                        this.classList.remove('placeholder-style');
+                    }
+                });
+            }
+        });
+
+        updateMessage();
+
+        function copyToClipboard() {
+            const text = outputMessage.textContent;
+            navigator.clipboard.writeText(text)
+                .then(() => showToast('Message copied to clipboard!'))
+                .catch(err => showToast('Failed to copy: ' + err));
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = "toast show";
+            setTimeout(() => {
+                toast.className = toast.className.replace("show", "");
+            }, 3000);
+        }
+
+        function resetFields() {
+            Object.values(inputs).forEach(input => {
+                input.value = '';
+                input.classList.remove('placeholder-style');
+            });
+            updateMessage();
+        }
+    </script>
+</body>
+</html>

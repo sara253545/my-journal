@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Evening Review - Dynamic Greeting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Evening Review - Enhanced Responsive</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,14 +17,15 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: auto;
-            gap: 20px;
+            gap: 1.25rem; /* 20px */
             width: 95%;
             height: 95vh;
+            max-width: 1200px;
         }
         .input-section, .output-section {
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 1rem;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
             overflow-y: auto;
         }
         .input-section {
@@ -31,13 +33,13 @@
         }
         .output-section {
             background-color: #ffffff;
-            border-left: 4px solid #7e57c2;
+            border-left: 0.25rem solid #7e57c2;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             white-space: pre-wrap;
             font-family: 'Courier New', monospace;
-            font-size: 16px;
+            font-size: 1rem; /* 16px */
         }
         .input-section h2 {
             margin-top: 0;
@@ -45,25 +47,25 @@
         }
         .input-section label {
             display: block;
-            margin-top: 15px;
+            margin-top: 1rem;
             font-weight: bold;
             color: #5e35b1;
         }
         .input-section input[type="text"], .input-section textarea {
             width: 100%;
-            margin-top: 5px;
-            padding: 10px;
-            border-radius: 8px;
+            margin-top: 0.3125rem; /* 5px */
+            padding: 0.625rem; /* 10px */
+            border-radius: 0.5rem; /* 8px */
             border: 1px solid #d1c4e9;
-            font-size: 14px;
+            font-size: 0.875rem; /* 14px */
             font-family: inherit;
         }
         .input-section textarea {
-            height: 60px;
+            height: 4rem; /* 60px */
             resize: vertical;
         }
         .input-section .radio-group {
-            margin-top: 5px;
+            margin-top: 0.3125rem;
         }
         .placeholder-style {
             color: #999;
@@ -75,28 +77,28 @@
             background-color: #7e57c2;
             color: white;
             border: none;
-            padding: 10px 15px;
-            margin-top: 10px;
-            border-radius: 8px;
+            padding: 0.625rem 0.9375rem; /* 10px 15px */
+            margin-top: 0.625rem; /* 10px */
+            border-radius: 0.5rem; /* 8px */
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.875rem; /* 14px */
         }
         .copy-button:hover, .reset-button:hover {
             background-color: #5e35b1;
         }
         .toast {
             visibility: hidden;
-            min-width: 200px;
+            min-width: 12.5rem; /* 200px */
             background-color: #4CAF50;
             color: white;
             text-align: center;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
             position: fixed;
-            bottom: 30px;
+            bottom: 1.875rem;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 14px;
+            font-size: 0.875rem;
             z-index: 1;
             opacity: 0;
             transition: opacity 0.5s, visibility 0.5s;
@@ -109,10 +111,20 @@
             .container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto auto;
+                height: auto;
             }
             .output-section {
                 border-left: none;
-                border-top: 4px solid #7e57c2;
+                border-top: 0.25rem solid #7e57c2;
+            }
+        }
+        @media (max-width: 500px) {
+            .output-section, .input-section {
+                font-size: 0.875rem; /* Slightly smaller text on phones */
+                padding: 0.75rem;
+            }
+            .container {
+                gap: 0.75rem;
             }
         }
     </style>

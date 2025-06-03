@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Welcome - My Journal</title>
     <style>
         body {
@@ -13,28 +14,62 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
+            text-align: center;
         }
         h1 {
             color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .quote {
+            font-style: italic;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
         }
         a {
             display: inline-block;
-            margin: 10px;
-            padding: 15px 25px;
-            background-color: #4CAF50;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 18px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         a:hover {
-            background-color: #388E3C;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .quote {
+                font-size: 1rem;
+            }
+            a {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Welcome to My Journal</h1>
-    <a href="morning.html">Morning Creation</a>
-    <a href="evening.html">Evening Review</a>
+    <div class="quote">"The way we <b>choose</b> to see the world, <b>creates</b> the world we see!"</div>
+    <div class="button-container">
+        <a href="morning.html">🌅 Morning Creation</a>
+        <a href="evening.html">🌙 Evening Review</a>
+    </div>
 </body>
 </html>
